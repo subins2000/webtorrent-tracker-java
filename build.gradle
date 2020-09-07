@@ -1,10 +1,67 @@
-apply plugin: 'java-library'
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+}
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     implementation "org.java-websocket:Java-WebSocket:1.5.1"
     implementation 'com.google.code.gson:gson:2.8.6'
-//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 sourceCompatibility = "7"
 targetCompatibility = "7"
+
+group = 'com.subinsb'
+version = '1.0'
+
+publishing {
+    publications {
+        WebTorrentTracker(MavenPublication) {
+            artifactId = 'WebTorrentTracker'
+            from components.java
+            pom {
+                name = 'WebTorrent Tracker'
+                description = 'WebTorrent Tracker. Can be used as a signalling server for WebRTC'
+                url = 'https://github.com/subins2000/webtorrent-tracker-java'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'subins2000'
+                        name = 'Subin Siby'
+                        email = 'mail@subinsb.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/subins2000/webtorrent-tracker-java.git'
+                    developerConnection = 'scm:git:ssh://github.com:subins2000/webtorrent-tracker-java.git'
+                    url = 'https://github.com/subins2000/webtorrent-tracker-java'
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            metadataSources {
+                gradleMetadata()
+            }
+        }
+    }
+}
+
+signing {
+    useGpgCmd()
+    sign publishing.publications.WebTorrentTracker
+}
